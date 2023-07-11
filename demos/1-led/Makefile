@@ -1,7 +1,8 @@
 # makfile configuration
 COMMON_OBJECTS  = main.o  # Wdinterrupthandler.o 
 CPU             = msp430g2553
-CFLAGS          = -mmcu=${CPU} -I../h
+CFLAGS          = -mmcu=${CPU} -I../h -DNEW_MSP_BOARD
+
 LDFLAGS		= -L/opt/ti/msp430_gcc/include 
 
 #switch the compiler (for the internal make rules)
