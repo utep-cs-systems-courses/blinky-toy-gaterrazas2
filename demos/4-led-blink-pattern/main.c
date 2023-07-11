@@ -25,14 +25,17 @@ __interrupt_vec(WDT_VECTOR) WDT()	/* 250 interrupts/sec */
   // handle blinking 
   blinkCount ++;
   if (blinkCount >= blinkLimit) { // on for 1 interrupt period
-    blinkCount = 0;
-    P1OUT |= LED_GREEN;
-  } else		          // off for blinkLimit - 1 interrupt periods
-    P1OUT &= ~LED_GREEN;
-
+      blinkCount = 0;
+      P1OUT |= LED_GREEN;
+      P1OUT &= ~LED_RED;
+  }
+  else {                  // off for blinkLimit - 1 interrupt periods
+      P1OUT &= ~LED_GREEN;
+      P1OUT |= LED_RED;
+  }
   // measure a second
   secondCount ++;
-  if (secondCount >= 250) {  // once each second
+  if (secondCount >= 125) {  // once each second
     secondCount = 0;
     blinkLimit ++;	     // reduce duty cycle
     if (blinkLimit >= 8)     // but don't let duty cycle go below 1/7.
