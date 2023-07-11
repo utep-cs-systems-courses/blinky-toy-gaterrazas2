@@ -3,6 +3,7 @@
 #include "libTimer.h"
 #include "led.h"
 
+// LEDs are reversed (green == red)
 int main(void) {
   P1DIR |= LEDS;
   P1OUT &= ~LED_GREEN;
@@ -14,6 +15,7 @@ int main(void) {
   or_sr(0x18);		/* CPU off, GIE on */
 }
 
+// turn green (red) LED on or off
 void greenControl(int on)
 {
   if (on) {
@@ -24,15 +26,19 @@ void greenControl(int on)
 }
 
 // blink state machine
-static int blinkLimit = 5;   //  state var representing reciprocal of duty cycle 
+static int blinkLimit = 5;   //  state var representing reciprocal of duty cycle
+
+// blinks the LEDs on and off to make them appear dimmer
 void blinkUpdate() // called every 1/250s to blink with duty cycle 1/blinkLimit
 {
   static int blinkCount = 0; // state var representing blink state
   blinkCount ++;
   if (blinkCount >= blinkLimit) {
     blinkCount = 0;
+    // (red)
     greenControl(1);
   } else
+    // (red)
     greenControl(0);
 }
 
@@ -54,14 +60,16 @@ void secondUpdate()  // called every 1/250 sec to call oncePerSecond once per se
 
 void timeAdvStateMachines() // called every 1/250 sec
 {
+  // blink with duty cycle 1/blinkLimit
   blinkUpdate();
+  // calls oncePerSecond once per second
   secondUpdate();
 }
 
-
-void __interrupt_vec(WDT_VECTOR) WDT()	/* 250 interrupts/sec */
+// gets called 250 times per second
+void __interrupt_vec(WDT_VECTOR) WDT()    /* 250 interrupts/sec */
 {
-  // handle blinking   
+  // handle blinking
   timeAdvStateMachines();
-} 
+}
 
